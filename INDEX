@@ -1,0 +1,19 @@
+From Dr. Sheaffer:
+
+htd.c and htd_defs.h are some code that the manufacturer supplied me.  Sorry to say that I don't remember what it does, and it hasn't proved very useful.  I think I used it to figure out the serial port configuration without having to reverse engineer it.  I do have an archived email thread about it, but I don't think you'll need it, regardless.  It's some pretty hideous code.  If I recall correctly, there are data structures in here for parsing the response strings.
+
+
+mca66_mc66_hex_codes.pdf is the serial communications specification that the manufacturer sent to me.
+
+
+mca66-rs232-codes.txt is a text version of the PDF that I made.  I then used that to build the codes array in mca66cntl.c.
+
+
+mca66cntl.c is the code that I wrote and showed you today.
+
+
+mca66cntl-test.txt is the output of some code that I wrote to examine the responses for the various codes.  Looking at this after you left, I see I was mistaken about payload sizes and which one is buggy.  Looks like MUTE is the buggy one, but payload sizes vary command to command.  We'll probably want to spend a little more time reverse engineering these in order to query starting positions for, e.g., volume sliders.
+
+
+interface.c is my unfinished first pass on an interface.  Looking at it again, I guess it's not that terrible, but it's certainly not great.  It uses GTK.
+
