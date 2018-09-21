@@ -7,14 +7,12 @@
 #include <errno.h>
 #include <string.h>
 #include <termios.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #define true 1
 #define false 0
 
-#define SERIAL_PORT "/dev/ttyUSB0"
-int serialfd;
+char* SERIAL_PORT = "/dev/ttyUSB0";
+int serialfd = -1;
 int debug = false;
 
 enum zone {
@@ -289,19 +287,21 @@ int main(int argc, char *argv[])
 {
   int i, opt;
   
-  while ((opt = getopt (argc, argv, "Dh")) != -1) {
+  while ((opt = getopt (argc, argv, "Dht:")) != -1) {
     switch (opt)
       {
-      case 'D':
-        debug = true;
-        mkfifo("dummy", 0777);
-        if ((serialfd = open("dummy", O_RDWR)) < 0) {
-          perror("Failed to open debug fifo");
-          return -3;
+      case 't':
+      	SERIAL_PORT = optarg;
+      	if ((serialfd = open(optarg, O_RDWR|O_NOCTTY|O_SYNC)) < 0) {
+      	  fprintf(stderr, "Failed to open device %s\n", optarg);
+      	  return -3;
         }
         break;
+      case 'D':
+        debug = true;
+        break;
       case 'h':
-      	fprintf(stderr, "usage: %s [-D] command\n", argv[0]);
+      	fprintf(stderr, "usage: %s [-D] [-t TTY device] command\n", argv[0]);
       	return -2;
       	break;
       default:
@@ -309,9 +309,9 @@ int main(int argc, char *argv[])
       }
   }
 
-  if(!debug) {
+  if(!debug | serialfd < 0) {
     if ((serialfd = open(SERIAL_PORT, O_RDWR|O_NOCTTY|O_SYNC)) < 0) {
-      perror("Failed to open " SERIAL_PORT);
+      fprintf(stderr, "Failed to open %s\n", SERIAL_PORT);
       return -1;
     }
   }
