@@ -7,9 +7,15 @@
 #include <errno.h>
 #include <string.h>
 #include <termios.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#define true 1
+#define false 0
 
 #define SERIAL_PORT "/dev/ttyUSB0"
 int serialfd;
+int debug = false;
 
 enum zone {
   nozone,
@@ -278,14 +284,36 @@ int process_command(enum zone z, enum command c)
   return 0;
 }
 
+
 int main(int argc, char *argv[])
 {
-  int i;
+  int i, opt;
+  
+  while ((opt = getopt (argc, argv, "Dh")) != -1) {
+    switch (opt)
+      {
+      case 'D':
+        debug = true;
+        mkfifo("dummy", 0777);
+        if ((serialfd = open("dummy", O_RDWR)) < 0) {
+          perror("Failed to open debug fifo");
+          return -3;
+        }
+        break;
+      case 'h':
+      	fprintf(stderr, "usage: %s [-D] command\n", argv[0]);
+      	return -2;
+      	break;
+      default:
+        abort();
+      }
+  }
 
-  if ((serialfd = open(SERIAL_PORT, O_RDWR|O_NOCTTY|O_SYNC)) < 0) {
-    perror("Failed to open " SERIAL_PORT);
-
-    return -1;
+  if(!debug) {
+    if ((serialfd = open(SERIAL_PORT, O_RDWR|O_NOCTTY|O_SYNC)) < 0) {
+      perror("Failed to open " SERIAL_PORT);
+      return -1;
+    }
   }
   /* Valid baud rates:                                                    *
    * B1200, B2400, B4800, B9600, B19200, B38400, B57600, B115200, B230400 */
