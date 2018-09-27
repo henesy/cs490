@@ -1,5 +1,3 @@
-daemon: build
-
 build: mca66d.go 
 	GOPATH=$$(pwd) go build mca66d.go 
 

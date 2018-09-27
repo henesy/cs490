@@ -1,25 +1,53 @@
 export CC=gcc
 export CFLAGS=-ggdb
 export LIBS=
+export PREFIX=/usr
 
-SUBDIRS = cntl interface mca66d
+SUBDIRS = cntl interface mca66d libmca66
+
+# Please fix these rules
 
 cntl:
-	$(MAKE) -C $@ $(MAKECMDGOALS)
+	$(MAKE) -C cntl build
+
+
+lib: 
+	$(MAKE) -C libmca66 build
+
+libinst:
+	$(MAKE) -C libmca66 install
+
+libuninst:
+	$(MAKE) -C libmca66 uninstall
+
 
 daemon:
-	$(MAKE) -C mca66d $(MAKECMDGOALS)
+	$(MAKE) -C mca66d build
+
+daemoninst: 
+	$(MAKE) -C mca66d install
+
+daemonuninst:
+	$(MAKE) -C mca66d uninstall
+
 
 interface:
-	$(MAKE) -C $@ $(MAKECMDGOALS)
+	$(MAKE) -C interface build
 
+
+# Yes, this does not work
 htd:
-	$(MAKE) -C $@ $(MAKECMDGOALS)
+	$(MAKE) -C $@ build
 
-all: cntl daemon interface
 
-clean:
-	$(foreach DIR, $(SUBDIRS), $(MAKE) -C $(DIR) $@;)
+all: 
+	$(foreach DIR, $(SUBDIRS), $(MAKE) -C $(DIR) build;)
+
+cleanall:
+	$(foreach DIR, $(SUBDIRS), $(MAKE) -C $(DIR) clean;)
 
 .PHONY: clean
-.PHONY: cntl interface daemon htd
+.PHONY: cntl cntlclean
+.PHONY: interface 
+.PHONY: daemon daemoninst daemonuninst
+.PHONY: htd
