@@ -7,9 +7,9 @@ LIBS=
 cntl: mca66cntl.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-daemon: daemon.go
+daemon: mca66d.go
 	# There is only really one go compiler
-	go build daemon.go
+	go build mca66d.go
 
 interface: interface.c
 	$(CC) -o $@ $^ $(CFLAGS) $(ICFLAGS) $(LIBS) $(ILIBS)
@@ -20,5 +20,5 @@ htd: htd.c htd_defs.h
 all: cntl daemon interface
 
 clean:
-	rm interface htd cntl daemon *.o
+	rm interface htd cntl mca66d *.o
 
