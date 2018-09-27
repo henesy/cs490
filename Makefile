@@ -8,8 +8,8 @@ cntl: mca66cntl.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 daemon: mca66d.go
-	# There is only really one go compiler
-	go build mca66d.go
+	# Build and install dependencies if missing
+	go build -i mca66d.go
 
 interface: interface.c
 	$(CC) -o $@ $^ $(CFLAGS) $(ICFLAGS) $(LIBS) $(ILIBS)
