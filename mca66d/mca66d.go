@@ -16,6 +16,7 @@ import (
 
 var dname string = "mca66d"
 var port string = ":8664"
+var logfile string = "/var/log/mca66.log"
 
 
 /* Handle clients as they're passed from acceptor */
@@ -122,6 +123,13 @@ func supervisor(s *daemon.Daemon) (string, error) {
 
 /* A daemon to listen and make calls to mca66 */
 func main() {
+	f, err := os.OpenFile(logfile, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal("Error, unable to open ", logfile, ": ", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+
 	service, err := daemon.New(dname, "Controller for mca66")
 	if err != nil {
 		log.Fatal("Error, daemonizition: ", err)
