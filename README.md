@@ -1,4 +1,4 @@
-# cs409
+# cs490
 Independent study with Dr. Sheaffer for controlling audio systems.
 
 ## mca66d
