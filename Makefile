@@ -3,13 +3,15 @@ export CFLAGS=-ggdb
 export LIBS=
 export PREFIX=/usr
 
-SUBDIRS = cntl interface mca66d libmca66
+SUBDIRS = interface mca66d libmca66 control
 
 # Please fix these rules
 
 cntl:
-	$(MAKE) -C cntl build
+	$(MAKE) -C control build
 
+oldcntl:
+	$(MAKE) -C cntl build
 
 lib: 
 	$(MAKE) -C libmca66 build
@@ -47,7 +49,8 @@ cleanall:
 	$(foreach DIR, $(SUBDIRS), $(MAKE) -C $(DIR) clean;)
 
 .PHONY: clean
-.PHONY: cntl cntlclean
+.PHONY: cntl
+.PHONY: libmca66
 .PHONY: interface 
 .PHONY: daemon daemoninst daemonuninst
 .PHONY: htd

@@ -45,6 +45,7 @@ Start mca66d service with:
 
 ### build
 
+	make lib
 	make cntl
 
 ## libmca66

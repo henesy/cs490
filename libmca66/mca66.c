@@ -7,57 +7,14 @@
 #include <errno.h>
 #include <string.h>
 #include <termios.h>
-
-#define true 1
-#define false 0
+#include "mca66.h"
 
 char* SERIAL_PORT = "/dev/ttyUSB0";
 int serialfd = -1;
 int debug = false;
 
-enum zone {
-  nozone,
-  zone1 = 2,
-  zone2 = 26,
-  zone3 = 50,
-  zone4 = 74,
-  zone5 = 98,
-  zone6 = 122,
-};
-
-enum command {
-  cmd_all_on,
-  cmd_all_off,
-  cmd_set_input_ch1 = 0,
-  cmd_set_input_ch2,
-  cmd_set_input_ch3,
-  cmd_set_input_ch4,
-  cmd_set_input_ch5,
-  cmd_set_input_ch6,
-  cmd_volume_up,
-  cmd_volume_down,
-  cmd_power_on,
-  cmd_power_off,
-  cmd_mute_toggle,
-  cmd_bass_up,
-  cmd_bass_down,
-  cmd_treble_up,
-  cmd_treble_down,
-  cmd_balance_right,
-  cmd_balance_left,
-  cmd_part_mode_input_ch1,
-  cmd_part_mode_input_ch2,
-  cmd_part_mode_input_ch3,
-  cmd_part_mode_input_ch4,
-  cmd_part_mode_input_ch5,
-  cmd_part_mode_input_ch6,
-  cmd_query_zone_state
-};
-
-struct codes {
-  const char *name;
-  const char *code;
-} codes[] = {
+// Should be made a map
+Codes codes[] = {
   { "ALL POWER ON",                       "\x02\x00\x01\x04\x38\x3F" },
   { "ALL POWER OFF",                      "\x02\x00\x01\x04\x39\x40" },
   { "Zone 1 - SET INPUT CHANNEL 1",       "\x02\x00\x01\x04\x03\x0A" },
@@ -283,31 +240,9 @@ int process_command(enum zone z, enum command c)
 }
 
 
-int main(int argc, char *argv[])
+int init_audio()
 {
-  int i, opt;
-  
-  while ((opt = getopt (argc, argv, "Dht:")) != -1) {
-    switch (opt)
-      {
-      case 't':
-      	SERIAL_PORT = optarg;
-      	if ((serialfd = open(optarg, O_RDWR|O_NOCTTY|O_SYNC)) < 0) {
-      	  fprintf(stderr, "Failed to open device %s\n", optarg);
-      	  return -3;
-        }
-        break;
-      case 'D':
-        debug = true;
-        break;
-      case 'h':
-      	fprintf(stderr, "usage: %s [-D] [-t TTY device] command\n", argv[0]);
-      	return -2;
-      	break;
-      default:
-        abort();
-      }
-  }
+  int i;
 
   if(!debug | serialfd < 0) {
     if ((serialfd = open(SERIAL_PORT, O_RDWR|O_NOCTTY|O_SYNC)) < 0) {
