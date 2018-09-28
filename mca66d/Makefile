@@ -10,3 +10,8 @@ uninstall:
 
 clean: 
 	rm mca66d
+	rm testclient
+
+test: testclient.go
+	go build testclient.go
+
