@@ -52,6 +52,6 @@ struct Codes {
 
 /* prototypes */
 int process_command(enum zone z, enum command c);
-int init_audio();
+int init_audio(char* device, int debugf);
 
 #endif
