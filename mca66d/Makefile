@@ -1,8 +1,9 @@
 build: mca66d.go 
 	GOPATH=$$(pwd) go build mca66d.go 
 
-install: daemon
+install: 
 	sudo ./mca66d install
+	sudo service mca66d start
 
 uninstall:
 	sudo service mca66d stop
@@ -14,4 +15,6 @@ clean:
 
 test: testclient.go
 	go build testclient.go
+
+rebuild: uninstall build install
 

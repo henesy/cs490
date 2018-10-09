@@ -5,9 +5,11 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"os/exec"
 	"time"
 	"strings"
 	"syscall"
+sc	"strconv"
 
 	// Our only non-stdlib dependency, makes life a lot easier and has no further deps
 	"github.com/takama/daemon"
@@ -31,7 +33,7 @@ func handler(conn net.Conn) {
 		}
 
 		str := string(buf)
-		parts := strings.Split(str, " ")
+		parts := strings.Fields(str)
 
 		// Each command will be two parts, [CMD args…] format
 		if len(parts) < 2 {
@@ -41,11 +43,26 @@ func handler(conn net.Conn) {
 		}
 
 		cmd := parts[0]
-		//args := parts[1:]
+		// Check err later
+		zone, _ := sc.Atoi(parts[1])
+		if zone < 0 || zone > 7 {
+			log.Print("Invalid zone from client: ", zone)
+			conn.Write([]byte("Error: invalid zone"))
+			continue
+		}
 
 		switch(cmd) {
 			case "POWER":
-				// Do power call, etc.
+				// POWER 1 ON (for example)
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				_, err := cntl.CombinedOutput()
+				if err != nil {
+					log.Print("Error, couldn't run: ", err)
+					continue
+				}
+				conn.Write([]byte("Ok.\n"))
+				
 			default:
 		}
 
