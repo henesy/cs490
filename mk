@@ -14,7 +14,7 @@ make_project () {
 	dir=$1
 	targ=$2
 
-	echo "== Building:" $dir $targ " =="
+	echo "== Processing:" $dir $targ " =="
 	if [ -d "$dir" ]; then
 		cd $dir
 		make $targ
@@ -28,6 +28,7 @@ make_project () {
 
 
 dir=$1
+targ=$2
 all="false"
 
 # Process all or cleanall
