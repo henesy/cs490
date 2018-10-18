@@ -35,10 +35,11 @@ func handler(conn net.Conn) {
 		str := string(buf)
 		parts := strings.Fields(str)
 
-		// Each command will be two parts, [CMD args…] format
-		if len(parts) < 2 {
+		// Each command will be two to three parts, [CMD args…]
+		if len(parts) < 3 || len(parts) > 4 {
+			//log.Print("Len parts: ", len(parts))
 			log.Print("Bad command format from client: ", str)
-			conn.Write([]byte("Error: invalid command format"))
+			conn.Write([]byte("Error: invalid command format\n"))
 			continue
 		}
 
@@ -47,24 +48,74 @@ func handler(conn net.Conn) {
 		zone, _ := sc.Atoi(parts[1])
 		if zone < 0 || zone > 7 {
 			log.Print("Invalid zone from client: ", zone)
-			conn.Write([]byte("Error: invalid zone"))
+			conn.Write([]byte("Error: invalid zone\n"))
 			continue
 		}
+		
+		var out []byte
 
+		// Need more strict parsing rules
 		switch(cmd) {
 			case "POWER":
-				// POWER 1 ON (for example)
+				// POWER 1 ON
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
-				_, err := cntl.CombinedOutput()
-				if err != nil {
-					log.Print("Error, couldn't run: ", err)
-					continue
-				}
-				conn.Write([]byte("Ok.\n"))
-				
+				out, err = cntl.CombinedOutput()
+			case "VOLUME":
+				// VOLUME 1 UP
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				out, err = cntl.CombinedOutput()
+			case "BASS":
+				// BASS 1 UP
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				out, err = cntl.CombinedOutput()
+			case "TREBLE":
+				// TREBLE 1 UP
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				out, err = cntl.CombinedOutput()
+			case "BALANCE":
+				// BALANCE 1 LEFT
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				out, err = cntl.CombinedOutput()
+			case "INPUT":
+				// INPUT 1 SET 2
+				// Set input channel to channel 2 for zone 1
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2], parts[3])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2], parts[3])
+				out, err = cntl.CombinedOutput()
+			case "QUERY":
+				// QUERY 1
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				out, err = cntl.CombinedOutput()
+			case "MUTE":
+				// MUTE 1 OFF
+				// Unmute
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				out, err = cntl.CombinedOutput()
+			case "STATUS":
+				// STATUS 1
+				// Get status points of zones
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone))
+				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone))
+				out, err = cntl.CombinedOutput()
+				log.Print("Status info: ", out)
 			default:
+				conn.Write([]byte("Error, unknown command.\n"))
+				continue
 		}
+		if err != nil {
+			log.Print("Error, couldn't run: ", err)
+			conn.Write([]byte("Error, command failed: " + err.Error() + "\n"))
+			continue
+		}
+		conn.Write([]byte("Ok.\n"))
+				
 
 		// Might be unnecessary
 		time.Sleep(5 * time.Millisecond)

@@ -62,7 +62,11 @@ int main(int argc, char *argv[])
 	*/
 	
 	// Parse command and arguments -- TODO fix index out of bounds checks
-	if(strcmp("POWER", cmd) == 0){
+	if (strcmp("STATUS", cmd) == 0){
+		// Get the current state of the system -- Parse data structures and output in readable form
+		// TODO
+	}
+	else if(strcmp("POWER", cmd) == 0){
 		if(strcmp("ON", argv[3]) == 0){
 			// Power on all ones
 			process_command(tozone, cmd_all_on);
