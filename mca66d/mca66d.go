@@ -35,8 +35,8 @@ func handler(conn net.Conn) {
 		str := string(buf)
 		parts := strings.Fields(str)
 
-		// Each command will be two to three parts, [CMD args…]
-		if len(parts) < 3 || len(parts) > 4 {
+		// Each command will be two parts, [CMD args…]
+		if len(parts) != 3 {
 			//log.Print("Len parts: ", len(parts))
 			log.Print("Bad command format from client: ", str)
 			conn.Write([]byte("Error: invalid command format\n"))
@@ -82,8 +82,8 @@ func handler(conn net.Conn) {
 				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
 				out, err = cntl.CombinedOutput()
 			case "INPUT":
-				// INPUT 1 SET 2
-				// Set input channel to channel 2 for zone 1
+				// INPUT 1 -2
+				// UN-Set input channel to channel 2 for zone 1 ;; a leading - and + are used, rather than using positive and negative values (parse as len=2 str)
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2], parts[3])
 				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2], parts[3])
 				out, err = cntl.CombinedOutput()
