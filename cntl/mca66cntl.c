@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
 		// Get the current state of the system -- Parse data structures and output in readable form
 		// TODO
 	}
+
+	// Power
 	else if(strcmp("POWER", cmd) == 0){
 		if(strcmp("ON", argv[3]) == 0){
 			// Power on all ones
@@ -76,6 +78,8 @@ int main(int argc, char *argv[])
 			process_command(tozone, cmd_all_off);
 		}
 	}
+
+	// Volume
 	else if(strcmp("VOLUME", cmd) == 0){
 		if(strcmp("UP", argv[3]) == 0){
 			process_command(tozone, cmd_volume_up);
@@ -84,8 +88,71 @@ int main(int argc, char *argv[])
 			process_command(tozone, cmd_volume_down);
 		}
 	}
+
+	// Bass
+	else if(strcmp("BASS", cmd) == 0){
+		if(strcmp("UP", argv[3]) == 0){
+			process_command(tozone, cmd_bass_up);
+		}
+		else if(strcmp("DOWN", argv[3]) == 0){
+			process_command(tozone, cmd_bass_down);
+		}
+	}
+
+	// Treble
+	else if(strcmp("TREBLE", cmd) == 0){
+		if(strcmp("UP", argv[3]) == 0){
+			process_command(tozone, cmd_treble_up);
+		}
+		else if(strcmp("DOWN", argv[3]) == 0){
+			process_command(tozone, cmd_treble_down);
+		}
+	}
+
+	// Balance
+	else if(strcmp("BALANCE", cmd) == 0){
+		if(strcmp("LEFT", argv[3]) == 0){
+			process_command(tozone, cmd_balance_left);
+		}
+		else if(strcmp("RIGHT", argv[3]) == 0){
+			process_command(tozone, cmd_balance_right);
+		}
+	}
+
+	// Input
+	else if(strcmp("INPUT", cmd) == 0){
+		enum command c = cmd_part_mode_input_ch1 -1;
+		int ch = atoi(argv[3]);
+		if(argv[3][0] == '-'){
+			// Unset
+			ch *= -1;
+		}
+		c += ch;
+		process_command(tozone, c);
+	}
+
+	// Query
+	else if(strcmp("VOLUME", cmd) == 0){
+		process_command(tozone, cmd_query_zone_state);
+	}
+
+	// Mute
+	else if(strcmp("MUTE", cmd) == 0){
+		// TODO -- this is wrong, mute state needs to be checked.
+		if(strcmp("ON", argv[3]) == 0){
+			// Mute
+			process_command(tozone, cmd_mute_toggle);
+		}
+		else if(strcmp("OFF", argv[3]) == 0){
+			// Unmute
+			process_command(tozone, cmd_mute_toggle);
+		}
+	}
+	
+	// Other, invalid command
 	else{
 		fprintf(stderr, "Invalid command: %s\n", cmd);
+		return -1;
 	}
 
 	return 0;
