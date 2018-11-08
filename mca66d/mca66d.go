@@ -36,7 +36,7 @@ func handler(conn net.Conn) {
 		parts := strings.Fields(str)
 
 		// Each command will be two parts, [CMD args…]
-		if len(parts) > 3 {
+		if len(parts) > 4 {
 			//log.Print("Len parts: ", len(parts))
 			log.Print("Bad command format from client: ", str)
 			conn.Write([]byte("Error: invalid command format\n"))
