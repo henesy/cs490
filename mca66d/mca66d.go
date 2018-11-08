@@ -29,7 +29,7 @@ func handler(conn net.Conn) {
 		_, err := conn.Read(buf)
 		if err != nil {
 			log.Print("Error, connection failure: ", err)
-			return
+			break
 		}
 
 		str := string(buf)
@@ -43,66 +43,78 @@ func handler(conn net.Conn) {
 			continue
 		}
 
-		cmd := parts[0]
-		// Check err later
-		zone, _ := sc.Atoi(parts[1])
-		if zone < 0 || zone > 7 {
-			log.Print("Invalid zone from client: ", zone)
-			conn.Write([]byte("Error: invalid zone\n"))
-			continue
+		cmd := parts[0]		
+		var out []byte
+		var zone int
+		
+		mkzone := func() {
+			// Check err later
+			zone, _ = sc.Atoi(parts[1])
+			if zone < 0 || zone > 7 {
+				log.Print("Invalid zone from client: ", zone)
+				conn.Write([]byte("Error: invalid zone\n"))		
+			}
 		}
 		
-		var out []byte
-
+		
 		// Need more strict parsing rules
 		switch(cmd) {
 			case "POWER":
 				// POWER 1 ON
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "VOLUME":
 				// VOLUME 1 UP
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "BASS":
 				// BASS 1 UP
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "TREBLE":
 				// TREBLE 1 UP
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "BALANCE":
 				// BALANCE 1 LEFT
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "INPUT":
-				// INPUT 1 -2
-				// UN-Set input channel to channel 2 for zone 1 ;; a leading - and + are used, rather than using positive and negative values (parse as len=2 str)
+				mkzone()
+				// INPUT 1 2
+				// Set input channel to channel 2 for zone 1
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2], parts[3])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "QUERY":
 				// QUERY 1
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone))
 				out, err = cntl.CombinedOutput()
 			case "MUTE":
 				// MUTE 1 OFF
-				// Unmute
+				// Unmute zone 1
+				mkzone()
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "STATUS":
-				// STATUS 1
+				// STATUS
 				// Get status points of zones
-				cntl := exec.Command("cntl", cmd, sc.Itoa(zone))
-				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone))
+				cntl := exec.Command("cntl", cmd)
+				log.Print("Running: ", cntl.Path, " ", cmd)
 				out, err = cntl.CombinedOutput()
 				log.Print("Status info: ", out)
 			default:
@@ -116,7 +128,6 @@ func handler(conn net.Conn) {
 			continue
 		}
 		conn.Write([]byte("Ok.\n"))
-				
 
 		// Might be unnecessary
 		time.Sleep(5 * time.Millisecond)
