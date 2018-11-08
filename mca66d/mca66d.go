@@ -104,7 +104,7 @@ func handler(conn net.Conn) {
 			case "QUERY":
 				// QUERY 1
 				mkzone()
-				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
+				cntl := exec.Command("cntl", cmd, sc.Itoa(zone))
 				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone))
 				out, err = cntl.CombinedOutput()
 			case "MUTE":
