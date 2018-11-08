@@ -64,51 +64,52 @@ func handler(conn net.Conn) {
 			case "VOLUME":
 				// VOLUME 1 UP
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "BASS":
 				// BASS 1 UP
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "TREBLE":
 				// TREBLE 1 UP
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "BALANCE":
 				// BALANCE 1 LEFT
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "INPUT":
 				// INPUT 1 -2
 				// UN-Set input channel to channel 2 for zone 1 ;; a leading - and + are used, rather than using positive and negative values (parse as len=2 str)
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2], parts[3])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2], parts[3])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "QUERY":
 				// QUERY 1
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone))
 				out, err = cntl.CombinedOutput()
 			case "MUTE":
 				// MUTE 1 OFF
 				// Unmute
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "STATUS":
 				// STATUS 1
 				// Get status points of zones
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone))
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone))
+				log.Print("Running: ", cntl.Path, " ", cmd, " ", sc.Itoa(zone))
 				out, err = cntl.CombinedOutput()
 				log.Print("Status info: ", out)
 			default:
 				conn.Write([]byte("Error, unknown command.\n"))
 				continue
 		}
+		
 		if err != nil {
 			log.Print("Error, couldn't run: ", err)
 			conn.Write([]byte("Error, command failed: " + err.Error() + "\n"))
