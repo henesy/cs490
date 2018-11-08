@@ -24,6 +24,12 @@ var logfile string = "/var/log/mca66.log"
 /* Handle clients as they're passed from acceptor */
 func handler(conn net.Conn) {
 	// Sequentially read from the client one line at a time for commands
+	// Write errors in a cleaner manner
+	werr := func(msg string) {
+		conn.Write([]byte("Error: " + msg + "\n"))
+		time.Sleep(5 * time.Millisecond)
+	}
+
 	for {
 		buf := make([]byte, 1024)
 		_, err := conn.Read(buf)
@@ -39,7 +45,7 @@ func handler(conn net.Conn) {
 		if len(parts) > 4 {
 			//log.Print("Len parts: ", len(parts))
 			log.Print("Bad command format from client: ", str)
-			conn.Write([]byte("Error: invalid command format\n"))
+			werr("invalid command format")
 			continue
 		}
 
@@ -47,6 +53,7 @@ func handler(conn net.Conn) {
 		var out []byte
 		var zone int
 		
+		// Produce the zone from the parts
 		mkzone := func() {
 			// Check err later
 			zone, _ = sc.Atoi(parts[1])
@@ -55,7 +62,6 @@ func handler(conn net.Conn) {
 				conn.Write([]byte("Error: invalid zone\n"))		
 			}
 		}
-		
 		
 		// Need more strict parsing rules
 		switch(cmd) {
@@ -119,12 +125,13 @@ func handler(conn net.Conn) {
 				log.Print("Status info: ", out)
 			default:
 				conn.Write([]byte("Error, unknown command.\n"))
+				time.Sleep(5 * time.Millisecond)
 				continue
 		}
 		
 		if err != nil {
 			log.Print("Error, couldn't run: ", err)
-			conn.Write([]byte("Error, command failed: " + err.Error() + "\n"))
+			werr("command failed: " + err.Error())
 			continue
 		}
 		conn.Write([]byte("Ok.\n"))
