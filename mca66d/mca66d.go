@@ -59,7 +59,7 @@ func handler(conn net.Conn) {
 			case "POWER":
 				// POWER 1 ON
 				cntl := exec.Command("cntl", cmd, sc.Itoa(zone), parts[2])
-				log.Print("Running: ", cntl.Path, cmd, sc.Itoa(zone), parts[2])
+				log.Print("Running: ", cntl.Path, " ", cmd, sc.Itoa(zone), " ", parts[2])
 				out, err = cntl.CombinedOutput()
 			case "VOLUME":
 				// VOLUME 1 UP
