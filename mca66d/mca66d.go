@@ -43,7 +43,6 @@ func handler(conn net.Conn) {
 
 		// Should be replaced with better sanitization
 		if len(parts) > 4 {
-			//log.Print("Len parts: ", len(parts))
 			log.Print("Bad command format from client: ", str)
 			werr("invalid command format")
 			continue

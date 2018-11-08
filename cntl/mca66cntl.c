@@ -41,11 +41,14 @@ int main(int argc, char *argv[])
 	// Parse command and arguments -- TODO fix index out of bounds checks
 	if (strcmp("STATUS", cmd) == 0){
 		// Get the current state of the system -- Parse data structures and output in readable form
+		
 		// TODO
+		exit -5;
 	}
 
 	// Past this point adhere to command format, status is the exception.
-	if(argc < 4)
+	// Ex. QUERY 1 ; POWER 1 ON
+	if(argc < 3)
 		goto usage;
 	
 	int zonen = atoi(argv[2]);
@@ -71,7 +74,7 @@ int main(int argc, char *argv[])
 		- zone 0 means all zones (if possible), zone is [1-6]
 	*/
 	
-	// Power
+	// POWER 1 ON
 	if(strcmp("POWER", cmd) == 0){
 		if(strcmp("ON", argv[3]) == 0){
 			// Power on all ones
@@ -83,7 +86,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Volume
+	// VOLUME 1 UP
 	else if(strcmp("VOLUME", cmd) == 0){
 		if(strcmp("UP", argv[3]) == 0){
 			process_command(tozone, cmd_volume_up);
@@ -93,7 +96,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Bass
+	// BASS 1 UP
 	else if(strcmp("BASS", cmd) == 0){
 		if(strcmp("UP", argv[3]) == 0){
 			process_command(tozone, cmd_bass_up);
@@ -103,7 +106,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Treble
+	// TREBLE 1 UP
 	else if(strcmp("TREBLE", cmd) == 0){
 		if(strcmp("UP", argv[3]) == 0){
 			process_command(tozone, cmd_treble_up);
@@ -113,7 +116,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Balance
+	// BALANCE 1 LEFT
 	else if(strcmp("BALANCE", cmd) == 0){
 		if(strcmp("LEFT", argv[3]) == 0){
 			process_command(tozone, cmd_balance_left);
@@ -123,7 +126,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	// Input
+	// INPUT 1 2
+	// Set input channel to channel 2 for zone 1
 	else if(strcmp("INPUT", cmd) == 0){
 		enum command c = cmd_part_mode_input_ch1 -1;
 		int ch = atoi(argv[3]);
@@ -135,12 +139,12 @@ int main(int argc, char *argv[])
 		process_command(tozone, c);
 	}
 
-	// Query
-	else if(strcmp("VOLUME", cmd) == 0){
+	// QUERY 1
+	else if(strcmp("QUERY", cmd) == 0){
 		process_command(tozone, cmd_query_zone_state);
 	}
 
-	// Mute
+	// MUTE 1 OFF
 	else if(strcmp("MUTE", cmd) == 0){
 		// TODO -- this is wrong, mute state needs to be checked.
 		if(strcmp("ON", argv[3]) == 0){
