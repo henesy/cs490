@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 			}
 	}
 	
-	// Only one command allowed at a time
 	if(argc < 2)
 		goto usage;
 	
@@ -38,18 +37,29 @@ int main(int argc, char *argv[])
 	
 	// Process commands
 	char* cmd = argv[1];
+	
+	// Parse command and arguments -- TODO fix index out of bounds checks
+	if (strcmp("STATUS", cmd) == 0){
+		// Get the current state of the system -- Parse data structures and output in readable form
+		// TODO
+	}
+
+	// Past this point adhere to command format, status is the exception.
+	if(argc < 4)
+		goto usage;
+	
 	int zonen = atoi(argv[2]);
 	int tozone = -1; // Target zone (using library numbers)
 	
 	// Convert zone from zonen
 	switch(zonen){
-	case 1: tozone = zone1;
-	case 2: tozone = zone2;
-	case 3: tozone = zone3;
-	case 4: tozone = zone4;
-	case 5: tozone = zone5;
-	case 6: tozone = zone6;
-	default: tozone = nozone;
+		case 1: tozone = zone1;
+		case 2: tozone = zone2;
+		case 3: tozone = zone3;
+		case 4: tozone = zone4;
+		case 5: tozone = zone5;
+		case 6: tozone = zone6;
+		default: tozone = nozone;
 	}
 	
 	/*
@@ -61,14 +71,8 @@ int main(int argc, char *argv[])
 		- zone 0 means all zones (if possible), zone is [1-6]
 	*/
 	
-	// Parse command and arguments -- TODO fix index out of bounds checks
-	if (strcmp("STATUS", cmd) == 0){
-		// Get the current state of the system -- Parse data structures and output in readable form
-		// TODO
-	}
-
 	// Power
-	else if(strcmp("POWER", cmd) == 0){
+	if(strcmp("POWER", cmd) == 0){
 		if(strcmp("ON", argv[3]) == 0){
 			// Power on all ones
 			process_command(tozone, cmd_all_on);

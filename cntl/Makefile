@@ -1,4 +1,4 @@
-CCFLAGS = -I ../libmca66 -L ../libmca66
+CCFLAGS = -ggdb -I ../libmca66 -L ../libmca66
 CLIBS = -lmca66
 TARG = cntl
 PREFIX = /usr

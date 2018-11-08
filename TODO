@@ -1,0 +1,20 @@
+- Configured for non-blocking read -> change to blocking read
+
+- Read the exact amount needed (mute goes forever)
+
+- Reverse engineering diff each operation
+
+TODO GUI
+
+- Name the zone ID's (save to config)
+
+- Name the inputs (save to config)
+
+- Resizing to screen (for mobile)
+
+COMING
+
+- Party mode description
+
+- Pi fixes for remote
+
