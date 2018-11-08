@@ -230,6 +230,8 @@ int process_command(enum zone z, enum command c)
 	write(serialfd, codes[z + c].code, 6);
 
 	sleep(1);
+	
+	// TODO -- maybe set 512 to variable size based on non-blocking read to read exact amount
 
 	for (i = 0; read(serialfd, &ch, 1) && i < 512; i++)
 		printf("%02hhx ", ch);
@@ -263,7 +265,9 @@ int init_audio(char* device, int debugf)
 	if (set_interface_attribs(serialfd, B38400, 0)) {
 		return -1;
 	}
-	set_blocking(serialfd, 0);
+	
+	// Set blocking(?)
+	set_blocking(serialfd, 1);
 
 	//	process_command(zone1, cmd_power_on);
 
