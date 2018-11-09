@@ -6,8 +6,8 @@
 
 /* data structures */
 enum zone {
-  nozone,
-  zone1 = 2,
+  nozone,		// 0
+  zone1 = 2,	// 2
   zone2 = 26,
   zone3 = 50,
   zone4 = 74,

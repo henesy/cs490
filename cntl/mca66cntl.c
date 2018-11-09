@@ -56,12 +56,12 @@ int main(int argc, char *argv[])
 	
 	// Convert zone from zonen
 	switch(zonen){
-		case 1: tozone = zone1;
-		case 2: tozone = zone2;
-		case 3: tozone = zone3;
-		case 4: tozone = zone4;
-		case 5: tozone = zone5;
-		case 6: tozone = zone6;
+		case 1: tozone = zone1; break;
+		case 2: tozone = zone2; break;
+		case 3: tozone = zone3; break;
+		case 4: tozone = zone4; break;
+		case 5: tozone = zone5; break;
+		case 6: tozone = zone6; break;
 		default: tozone = nozone;
 	}
 	
