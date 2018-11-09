@@ -1,3 +1,10 @@
+TODO
+
+Cntl/lib (for blocking read widths):
+	PACKED -- gcc -- data structure of specific size
+
+
+
 - Configured for non-blocking read -> change to blocking read
 
 - Read the exact amount needed (mute goes forever)
