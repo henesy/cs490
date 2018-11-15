@@ -40,43 +40,74 @@
 <!-- Demo block -->
 <div class="container">
     <div class="row">
-        <div class="col-xs-4 col-md-push-8">On laptop and desktop screens this text will go to the right and the image will go to the left, changing places.</div>
-        <div class="col-xs-8 col-md-pull-4"><img src="city.jpg" class="img-responsive"></div>
+
+        <div class="col-xs-4 col-md-push-8">
+        	On laptop and desktop screens this text will go to the right and the image will go to the left, changing places.
+        </div>
+
+        <div class="col-xs-8 col-md-pull-4">
+        	<img src="city.jpg" class="img-responsive">
+        </div>
+
     </div>
 </div>
 
 <!-- Debug container for websockets -->
 <div class="container" id="container">
-	<input type="button" id="ping" name="ping" value="Ping" onclick="ping()"/>
+
+	<div class="col-sm-4 col-md-push-4">
+	<!-- <input type="button" id="ping" name="ping" value="Ping" onclick="ping()"/> -->
+
+	<button type="button" id="sendBtn">
+		Send
+	</button>
+	</div>
+
 </div>
 
 
 </body>
 </html>
 
+
+<!-- Vendor JQuery 1.10.2 -->
+<script type="text/javascript" src="./jquery/jquery.min.js"></script>
+
 <!-- Begin script block -->
-<script>
-	if (!"WebSocket" in window) {
-		alert("Websocket support is not detected and is required!");
-	}
+<script type="text/javascript">
+	$(function () {
+            var ws;
 
-	var ws = new WebSocket("ws://" + "localhost:8665" + "/socket");
+            if (window.WebSocket === undefined) {
+                $("#container").append("Your browser does not support WebSockets");
+                return;
+            } else {
+                ws = initWS();
+            }
 
-	ws.onopen = function() {
-	  ws.send(JSON.stringify({message: "hello server!"}))
-	}
-	
-	ws.onmessage = function(event) {
-	  var m = JSON.parse(event.data);
-	  console.debug("Received message", m.message);
-	}
-	
-	ws.onerror = function(event) {
-	  console.debug(event)
-	}
+            function initWS() {
+                var socket = new WebSocket("ws://localhost:8665/socket");
+                var container = $("#container");
+                
+                socket.onopen = function() {
+                    container.append("<p>Socket is open</p>");
+                };
 
-	
-	function ping() {
-		ws.send("Hello World!\n");
-	}
+                socket.onmessage = function (e) {
+                    container.append("<p> Got:" + e.data + "</p>");
+                };
+
+                socket.onclose = function () {
+                    container.append("<p>Socket closed</p>");
+                };
+
+                return socket;
+            }
+
+            $("#sendBtn").click(function (e) {
+                e.preventDefault();
+                ws.send(JSON.stringify({ Num: parseInt($("#numberfield").val()) }));
+            });
+        });
+
 </script>
