@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 
+<!-- Use a vendored bootstrap ☺ -->
 <head>
 
     <meta charset="utf-8">
@@ -15,8 +16,10 @@
 
 </head>
 
+<!-- Body begin -->
 <body>
 
+<!-- Header menu for changing rooms -->
 <div class="menu">
 
     <header>
@@ -34,6 +37,7 @@
 
 </div>
 
+<!-- Demo block -->
 <div class="container">
     <div class="row">
         <div class="col-xs-4 col-md-push-8">On laptop and desktop screens this text will go to the right and the image will go to the left, changing places.</div>
@@ -41,18 +45,22 @@
     </div>
 </div>
 
-<input type="button" id="ping" name="ping" value="Ping" onclick="ping()"/>
+<!-- Debug container for websockets -->
+<div class="container" id="container">
+	<input type="button" id="ping" name="ping" value="Ping" onclick="ping()"/>
+</div>
+
 
 </body>
-
 </html>
 
+<!-- Begin script block -->
 <script>
 	if (!"WebSocket" in window) {
 		alert("Websocket support is not detected and is required!");
 	}
 
-	var ws = new WebSocket("ws://" + "10.31.4.227" + "/socket");
+	var ws = new WebSocket("ws://" + "localhost:8665" + "/socket");
 
 	ws.onopen = function() {
 	  ws.send(JSON.stringify({message: "hello server!"}))

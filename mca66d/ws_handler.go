@@ -5,7 +5,7 @@ import (
 	"log"
 
 	// Extension library to stdlib that handles websockets nicely
-	"github.com/gorilla/websocket"
+	""
 )
 
 
@@ -26,13 +26,13 @@ func readLoop(c *websocket.Conn) {
 /* Handle clients as they're passed from ws_acceptor */
 func ws_handler(w http.ResponseWriter, r *http.Request) {
   	conn, err := upgrader.Upgrade(w, r, nil)
-  	upgrader.CheckOrigin = func(r *http.Request) bool { return false }
+  	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
     if err != nil {
         log.Println(err)
         return
     }
     
-    go readLoop(conn)
+	go readLoop(conn)
     
     for {
 	    messageType, p, err := conn.ReadMessage()
@@ -47,7 +47,7 @@ func ws_handler(w http.ResponseWriter, r *http.Request) {
 /* Accept websocket connections as they come in */
 func ws_acceptor() {
 	http.HandleFunc("/socket", ws_handler)
-    err := http.ListenAndServe(":80", nil)
+    err := http.ListenAndServe(":8665", nil)
     if err != nil {
         panic("ListenAndServe: " + err.Error())
     }
