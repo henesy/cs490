@@ -1,5 +1,5 @@
-build: mca66d.go 
-	GOPATH=$$(pwd) go build mca66d.go 
+build: main.go tcp_handler.go ws_handler.go
+	GOPATH=$$(pwd) go build 
 
 install: 
 	sudo ./mca66d install
@@ -11,9 +11,10 @@ uninstall:
 
 clean: 
 	rm mca66d
-	rm testclient
+	rm testclient/testclient
 
 test: testclient.go
+	cd testclient
 	go build testclient.go
 
 rebuild: uninstall build install

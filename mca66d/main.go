@@ -5,13 +5,13 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"os/exec"
 	"time"
-	"strings"
 	"syscall"
 sc	"strconv"
+	"os/exec"
+	"fmt"
 
-	// Our only non-stdlib dependency, makes life a lot easier and has no further deps
+	// Makes life a lot easier and has no external deps
 	"github.com/takama/daemon"
 )
 
@@ -21,35 +21,9 @@ var port string = ":8664"
 var logfile string = "/var/log/mca66.log"
 
 
-/* Handle clients as they're passed from acceptor */
-func handler(conn net.Conn) {
-	// Write errors in a cleaner manner
-	werr := func(msg string) {
-		conn.Write([]byte("Error: " + msg + "\n"))
-		time.Sleep(5 * time.Millisecond)
-	}
-
-	// Sequentially read from the client one line at a time for commands
-	for {
-		buf := make([]byte, 1024)
-		_, err := conn.Read(buf)
-		if err != nil {
-			log.Print("Error, connection failure: ", err)
-			break
-		}
-
-		str := string(buf)
-		parts := strings.Fields(str)
-
-		// Should be replaced with better sanitization
-		if len(parts) > 4 {
-			log.Print("Bad command format from client: ", str)
-			werr("invalid command format")
-			continue
-		}
-
+/* Handle language translation -- given a string produce write-able outputs (and err) */
+func docmd(parts []string) (out []byte, err error) {
 		cmd := parts[0]		
-		var out []byte
 		var zone int
 		
 		// Produce the zone from the parts
@@ -58,7 +32,8 @@ func handler(conn net.Conn) {
 			zone, _ = sc.Atoi(parts[1])
 			if zone < 0 || zone > 7 {
 				log.Print("Invalid zone from client: ", zone)
-				conn.Write([]byte("Error: invalid zone\n"))		
+				out = []byte("Error: invalid zone\n")
+				err = fmt.Errorf("Invalid zone")
 			}
 		}
 		
@@ -123,35 +98,10 @@ func handler(conn net.Conn) {
 				log.Print("Status info: ", out)
 			default:
 				log.Print("Error, unknown command: ", cmd)
-				conn.Write([]byte("Error, unknown command.\n"))
-				time.Sleep(5 * time.Millisecond)
-				continue
+				out = []byte("Error, unknown command.\n")
+				err = fmt.Errorf("Invalid command")
 		}
-		
-		if err != nil {
-			log.Print("Error, couldn't run: ", err)
-			werr("command failed: " + err.Error())
-			continue
-		}
-		conn.Write([]byte("Ok.\n"))
-
-		// Might be unnecessary
-		time.Sleep(5 * time.Millisecond)
-	}
-}
-
-/* Accept clients as they come in */
-func acceptor(l net.Listener) {
-	for {
-		conn, err := l.Accept()
-		if err != nil {
-			log.Print("Error, attempted connection to listener failed: ", err)
-			continue
-		}
-		go handler(conn)
-
-		time.Sleep(50 * time.Millisecond)
-	}
+		return
 }
 
 /* Supervise daemon duties */
@@ -186,7 +136,7 @@ func supervisor(s *daemon.Daemon) (string, error) {
 	if err != nil {
 		log.Fatal("Error, listener: ", err)
 	}
-	go acceptor(l)
+	go tcp_acceptor(l)
    	 
    	 for {
 		select {

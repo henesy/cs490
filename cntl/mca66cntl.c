@@ -131,12 +131,7 @@ int main(int argc, char *argv[])
 	else if(strcmp("INPUT", cmd) == 0){
 		enum command c = cmd_part_mode_input_ch1 -1;
 		int ch = atoi(argv[3]);
-		if(argv[3][0] == '-'){
-			// Unset
-			ch *= -1;
-		}
-		c += ch;
-		process_command(tozone, c);
+		process_command(tozone, ch);
 	}
 
 	// QUERY 1
