@@ -41,8 +41,34 @@
     </div>
 </div>
 
+<input type="button" id="ping" name="ping" value="Ping" onclick="ping()"/>
 
 </body>
 
 </html>
 
+<script>
+	if (!"WebSocket" in window) {
+		alert("Websocket support is not detected and is required!");
+	}
+
+	var ws = new WebSocket("ws://" + "10.31.4.227" + "/socket");
+
+	ws.onopen = function() {
+	  ws.send(JSON.stringify({message: "hello server!"}))
+	}
+	
+	ws.onmessage = function(event) {
+	  var m = JSON.parse(event.data);
+	  console.debug("Received message", m.message);
+	}
+	
+	ws.onerror = function(event) {
+	  console.debug(event)
+	}
+
+	
+	function ping() {
+		ws.send("Hello World!\n");
+	}
+</script>

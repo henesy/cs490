@@ -137,6 +137,7 @@ func supervisor(s *daemon.Daemon) (string, error) {
 		log.Fatal("Error, listener: ", err)
 	}
 	go tcp_acceptor(l)
+	go ws_acceptor()
    	 
    	 for {
 		select {
