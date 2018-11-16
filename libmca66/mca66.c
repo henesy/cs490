@@ -298,7 +298,7 @@ int init_audio(char* device, int debugf)
 	}
 	
 	// 1 -- blocking ;; 0 -- non-blocking
-	set_blocking(serialfd, 0);
+	set_blocking(serialfd, 1);
 
 	//	process_command(zone1, cmd_power_on);
 
