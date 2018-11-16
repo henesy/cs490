@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"log"
 	"time"
+	"strings"
 
 	// Extension library to stdlib that handles websockets nicely
 	"github.com/gorilla/websocket"
@@ -62,14 +63,24 @@ func ws_handler(w http.ResponseWriter, r *http.Request) {
 	go keepAlive(conn, 168 * time.Hour)
     
     for {
-	    _, p, err := conn.ReadMessage()
-	    //messageType, p, err := conn.ReadMessage()
+	    messageType, p, err := conn.ReadMessage()
 	    if err != nil {
 	        log.Println(err)
 	        return
 	    }
-	    //log.Println(p, messageType)
-		log.Println(string(p))
+
+	    str := string(p)
+		parts := strings.Fields(str)
+
+		// Process command message
+		resp, err := docmd(parts)
+		if err != nil {
+			log.Println("Error, ", err.Error())
+		}
+		
+		conn.WriteMessage(messageType, resp)
+
+		log.Println("From websocket, got: ", str)
     }
 }
 

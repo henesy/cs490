@@ -4,15 +4,15 @@
 <!-- Use a vendored bootstrap ☺ -->
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>MCA66 UI</title>
+	<title>MCA66 UI</title>
 
-    <!-- Bootstrap CSS v3.3.5 https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css -->
-    <link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="ui.css">
+	<!-- Bootstrap CSS v3.3.5 https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css -->
+	<link rel="stylesheet" href="./bootstrap/bootstrap.min.css">
+	<link rel="stylesheet" href="ui.css">
 
 </head>
 
@@ -22,34 +22,34 @@
 <!-- Header menu for changing rooms -->
 <div class="menu">
 
-    <header>
-        <h3>MCA66 Controller</h3>
-    </header>
+	<header>
+		<h3>MCA66 Controller</h3>
+	</header>
 
-    <ul>
-        <li><a href="index.html" class="active">Family Room</a></li>
-        <li><a href="">Dining Room</a></li>
-        <li><a href="">Loft</a></li>
-        <li><a href="">Conservatory</a></li>
-        <li><a href="">Garage</a></li>
-        <li><a href="">Basement</a></li>
-    </ul>
+	<ul>
+		<li><a href="index.html" class="active">Family Room</a></li>
+		<li><a href="">Dining Room</a></li>
+		<li><a href="">Loft</a></li>
+		<li><a href="">Conservatory</a></li>
+		<li><a href="">Garage</a></li>
+		<li><a href="">Basement</a></li>
+	</ul>
 
 </div>
 
 <!-- Demo block -->
 <div class="container">
-    <div class="row">
+	<div class="row">
 
-        <div class="col-xs-4 col-md-push-8">
-        	On laptop and desktop screens this text will go to the right and the image will go to the left, changing places.
-        </div>
+		<div class="col-xs-4 col-md-push-8">
+			On laptop and desktop screens this text will go to the right and the image will go to the left, changing places.
+		</div>
 
-        <div class="col-xs-8 col-md-pull-4">
-        	<img src="city.jpg" class="img-responsive">
-        </div>
+		<div class="col-xs-8 col-md-pull-4">
+			<img src="city.jpg" class="img-responsive">
+		</div>
 
-    </div>
+	</div>
 </div>
 
 <!-- Debug container for websockets -->
@@ -58,9 +58,17 @@
 	<div class="col-sm-4 col-md-push-4">
 	<!-- <input type="button" id="ping" name="ping" value="Ping" onclick="ping()"/> -->
 
+	<!--
 	<button type="button" id="sendBtn">
-		Send
+		Hi
 	</button>
+	-->
+	
+	<!-- From websocket ex -->
+	<input id="input" type="text" />
+	<button onclick="send()">Send</button>
+	<pre id="output"></pre>
+	
 	</div>
 
 </div>
@@ -75,39 +83,66 @@
 
 <!-- Begin script block -->
 <script type="text/javascript">
+	/*
 	$(function () {
-            var ws;
+		var ws;
 
-            if (window.WebSocket === undefined) {
-                $("#container").append("Your browser does not support WebSockets");
-                return;
-            } else {
-                ws = initWS();
-            }
+		if (window.WebSocket === undefined) {
+			$("#container").append("Your browser does not support WebSockets");
+			return;
+		} else {
+			ws = initWS();
+		}
 
-            function initWS() {
-                var socket = new WebSocket("ws://localhost:8665/socket");
-                var container = $("#container");
-                
-                socket.onopen = function() {
-                    container.append("<p>Socket is open</p>");
-                };
+		function initWS() {
+			var socket = new WebSocket("ws://localhost:8665/socket");
+			var container = $("#container");
+			
+			socket.onopen = function() {
+				container.append("<p>Socket is open</p>");
+			};
 
-                socket.onmessage = function (e) {
-                    container.append("<p> Got:" + e.data + "</p>");
-                };
+			socket.onmessage = function (e) {
+				container.append("<p> Got:" + e.data + "</p>");
+			};
 
-                socket.onclose = function () {
-                    container.append("<p>Socket closed</p>");
-                };
+			socket.onclose = function () {
+				container.append("<p>Socket closed</p>");
+			};
 
-                return socket;
-            }
+			return socket;
+		}
 
-            $("#sendBtn").click(function (e) {
-                e.preventDefault();
-                ws.send("hi");
-            });
-        });
+		$("#sendBtn").click(function (e) {
+			e.preventDefault();
+			ws.send("hi");
+		});
+
+	});
+	*/
+		
+	<!-- from websocket ex -->
+	var input = document.getElementById("input");
+	var output = document.getElementById("output");
+	var socket = new WebSocket("ws://localhost:8665/socket");
+	
+	socket.onopen = function () {
+		output.innerHTML += "Status: Connected\n";
+	};
+	
+	socket.onmessage = function (e) {
+		output.innerHTML += "Server: " + e.data + "\n";
+	};
+	
+	socket.onclose = function () {
+		output.innerHTML += "Status: Closed\n";
+	}
+	
+	function send() {
+		socket.send(input.value);
+		input.value = "";
+	}
+
+
 
 </script>
