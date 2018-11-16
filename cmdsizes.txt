@@ -1,0 +1,21 @@
+cmd			bytes	oldval
+
+POWER ALL	168
+
+QUERY		112
+
+PART		182
+
+BALANCE		14		28
+
+TREBLE		14		28
+
+BASS			14		28
+
+MUTE		14		(?)
+
+POWER ZONE 	61
+
+SET INPUT	28		
+
+VOLUME		28

@@ -1,25 +1,16 @@
 TODO
 
-Cntl/lib (for blocking read widths):
-	PACKED -- gcc -- data structure of specific size
-
-
-
-- Configured for non-blocking read -> change to blocking read
+- Cntl/lib (for blocking read widths)
+		- PACKED -- gcc -- data structure of specific size
 
 - Read the exact amount needed (mute goes forever)
 
 - Reverse engineering diff each operation
+
+- Implement party mode(?) -- just unifies the input channel(?)
 
 TODO GUI
 
 - Name the zone ID's (save to config)
 
 - Name the inputs (save to config)
-
-- Resizing to screen (for mobile)
-
-COMING
-
-- Party mode description
-

@@ -13,7 +13,7 @@ char* SERIAL_PORT;
 int serialfd = -1;
 int debug;
 
-// Should be made a map
+// Should be made a map if rewritten
 Codes codes[] = {
 	{ "ALL POWER ON",											 "\x02\x00\x01\x04\x38\x3F" },
 	{ "ALL POWER OFF",											"\x02\x00\x01\x04\x39\x40" },
@@ -229,11 +229,42 @@ int process_command(enum zone z, enum command c)
 	printf("Sending %s\n", codes[z + c].name);
 	write(serialfd, codes[z + c].code, 6);
 
-	sleep(1);
+	// sleep(1); // Should be safe to remove with change in block-ness
 	
-	// TODO -- maybe set 512 to variable size based on non-blocking read to read exact amount
+	int toread; // old default
+	
+	// These values are acquired through testing ;; see) cmdsizes.txt
+	if(c >= cmd_all_on && c <= cmd_all_off)
+		toread = 168;
+		
+	else if(c >= cmd_set_input_ch1 && c <= cmd_set_input_ch6)
+		toread = 28;
+		
+	else if(c >= cmd_volume_up && c <= cmd_volume_down)
+		toread = 28;
+		
+	else if(c >= cmd_power_on && c <= cmd_power_off)
+		toread = 61;
+		
+	else if(cmd_mute_toggle)
+		toread = 28;
+		
+	else if(c >= cmd_bass_up && c <= cmd_balance_left)
+		// Bass, Treble, Balance all same size -- maybe verify
+		toread = 28;
+		
+	else if(c >= cmd_part_mode_input_ch1 && c <= cmd_part_mode_input_ch6)
+		toread = 182;
+		
+	else if(cmd_query_zone_state)
+		toread = 112;
+		
+	else
+		toread = -1;
+		
+	
 
-	for (i = 0; read(serialfd, &ch, 1) && i < 512; i++)
+	for (i = 0; read(serialfd, &ch, 1) && i < toread; i++)
 		printf("%02hhx ", ch);
 	
 	printf("\nRead %d bytes\n", i);
@@ -266,8 +297,8 @@ int init_audio(char* device, int debugf)
 		return -1;
 	}
 	
-	// Set blocking(?)
-	set_blocking(serialfd, 1);
+	// 1 -- blocking ;; 0 -- non-blocking
+	set_blocking(serialfd, 0);
 
 	//	process_command(zone1, cmd_power_on);
 
