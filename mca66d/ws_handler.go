@@ -40,16 +40,6 @@ func keepAlive(c *websocket.Conn, timeout time.Duration) {
   }()
 }
 
-/* Continually read messages -- supposed to keep alive? */
-func readLoop(c *websocket.Conn) {
-    for {
-        if _, _, err := c.NextReader(); err != nil {
-            c.Close()
-            break
-        }
-    }
-}
-
 /* Handle clients as they're passed from ws_acceptor */
 func ws_handler(w http.ResponseWriter, r *http.Request) {
   	conn, err := upgrader.Upgrade(w, r, nil)
@@ -87,7 +77,7 @@ func ws_handler(w http.ResponseWriter, r *http.Request) {
 /* Accept websocket connections as they come in */
 func ws_acceptor() {
 	http.HandleFunc("/socket", ws_handler)
-    err := http.ListenAndServe(":8665", nil)
+    err := http.ListenAndServe(wsport, nil)
     if err != nil {
         panic("ListenAndServe: " + err.Error())
     }

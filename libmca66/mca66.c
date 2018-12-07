@@ -221,7 +221,7 @@ void set_blocking (int fd, int should_block)
 	}
 }
 			
-int process_command(enum zone z, enum command c)
+int process_command(zone z, command c)
 {
 	char ch;
 	int i;

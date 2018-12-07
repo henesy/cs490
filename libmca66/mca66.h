@@ -4,6 +4,9 @@
 #define true 1
 #define false 0
 
+typedef enum command zone;
+typedef enum command command;
+
 /* data structures */
 enum zone {
   nozone,		// 0
@@ -51,7 +54,7 @@ struct Codes {
 }; 
 
 /* prototypes */
-int process_command(enum zone z, enum command c);
+int process_command(zone z, command c);
 int init_audio(char* device, int debugf);
 
 #endif

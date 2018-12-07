@@ -18,6 +18,7 @@ sc	"strconv"
 
 var dname string = "mca66d"
 var port string = ":8664"
+var wsport string = ":8665"
 var logfile string = "/var/log/mca66.log"
 
 
